@@ -20,7 +20,7 @@ jobs:
           sed -i 's#official_releases#archive#' depends/packages/qt.mk
           grep -n "download_path" depends/packages/qt.mk | head -2
           # 2. The Qt unit strings still say SCASH (inherited from the upstream fork)
-          sed -i 's/SCASH/PPC/g' src/policy/feerate.h src/qt/bitcoinunits.cpp
+          sed -i 's/SCASH/PPC/g' src/policy/feerate.h src/qt/bitcoinunits.cpp src/qt/forms/modaloverlay.ui
           grep -n 'CURRENCY_UNIT' src/policy/feerate.h
 
       - name: Build depends with Qt
