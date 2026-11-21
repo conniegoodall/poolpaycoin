@@ -16,7 +16,7 @@ jobs:
 
       - name: Disable the 189 re-anchor (test build)
         run: |
-          sed -i 's/consensus.nASERTReanchorHeight = 189;/consensus.nASERTReanchorHeight = 0;/' src/kernel/chainparams.cpp
+          sed -i 's/consensus.nASERTReanchorHeight = 189;/consensus.nASERTReanchorHeight = 21000000;/' src/kernel/chainparams.cpp
           grep -n "nASERTReanchorHeight" src/kernel/chainparams.cpp
 
       - name: Build depends (Windows x64, no Qt)
