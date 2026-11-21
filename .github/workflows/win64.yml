@@ -10,32 +10,29 @@ jobs:
       - name: Install build tools and mingw
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libtool autotools-dev automake \
-            pkg-config bsdmainutils python3 curl ca-certificates git cmake \
-            g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64
+          sudo apt-get install -y build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 curl ca-certificates git cmake g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64
           sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
           sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
-      - name: Build depends (Windows x64)
-        run: make -C depends -j$(nproc) HOST=x86_64-w64-mingw32 NO_QT=1
+      - name: Build depends with Qt (Windows x64)
+        run: make -C depends -j$(nproc) HOST=x86_64-w64-mingw32
 
       - name: autogen
         run: ./autogen.sh
 
       - name: configure
-        run: ./configure --prefix=$(pwd)/depends/x86_64-w64-mingw32 \
-          --without-gui --disable-tests --disable-bench --disable-fuzz-binary \
-          --without-miniupnpc --without-natpmp
+        run: ./configure --prefix=$PWD/depends/x86_64-w64-mingw32 --disable-tests --disable-bench --disable-fuzz-binary --without-miniupnpc --without-natpmp
 
       - name: make
         run: make -j$(nproc)
 
       - name: Show what we built
-        run: ls -l src/*.exe
+        run: ls -l src/*.exe src/qt/*.exe || true
 
       - uses: actions/upload-artifact@v4
         with:
-          name: poolpaycoin-win64
+          name: poolpaycoin-win64-gui
           path: |
             src/poolpaycoind.exe
             src/poolpaycoin-cli.exe
+            src/qt/poolpaycoin-qt.exe
