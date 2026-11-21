@@ -44,6 +44,12 @@ jobs:
       - name: make
         run: make -j$(nproc)
 
+      - name: Strip debug symbols
+        run: |
+          sudo apt-get install -y binutils-mingw-w64-x86-64
+          x86_64-w64-mingw32-strip --strip-all src/poolpaycoind.exe src/poolpaycoin-cli.exe src/qt/bitcoin-qt.exe
+          ls -lh src/poolpaycoind.exe src/poolpaycoin-cli.exe src/qt/bitcoin-qt.exe
+
       - uses: actions/upload-artifact@v4
         with:
           name: poolpaycoin-win64
