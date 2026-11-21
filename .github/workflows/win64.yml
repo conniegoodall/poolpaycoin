@@ -7,11 +7,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install build tools
+      - name: Install build tools and mingw
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential libtool autotools-dev automake \
-            pkg-config bsdmainutils python3 curl ca-certificates git
+            pkg-config bsdmainutils python3 curl ca-certificates git cmake \
+            g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64
+          sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
+          sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
       - name: Build depends (Windows x64)
         run: make -C depends -j$(nproc) HOST=x86_64-w64-mingw32 NO_QT=1
