@@ -622,11 +622,23 @@ public:
         // deficit (~30 hours) during the slow single-miner early-launch period, which then kept
         // difficulty pinned at powLimit far too long once real outside hashrate (a third-party miner)
         // showed up -- the whole point of fast ASERT was defeated by the from-genesis deficit. Resets
-        // the schedule clock to zero as of block 188 (the real tip when this was deployed) without
-        // discarding any chain history. Height 189 is the first block height to use the new anchor.
-        consensus.nASERTReanchorHeight = 189;
+        // the schedule clock to zero as of block 188 (the real tip when this fix was COMMITTED) without
+        // discarding any chain history.
+        //
+        // nASERTReanchorHeight corrected 2026-11-21: the fix was committed at 2026-11-05 01:25 but the
+        // live node was not actually restarted onto it until 2026-11-05 20:38 (~19h later) -- blocks
+        // 189-222, mined by the still-running OLD binary in that gap, were validated under the
+        // ORIGINAL genesis anchor, not this one. A fresh node validating from genesis (which must
+        // apply this rule exactly where production actually started enforcing it, not where the
+        // source comment assumed) rejects the real chain's own history if this gate is set to 189 --
+        // confirmed empirically: height 223 is where the live chain's real nBits first diverges from
+        // the genesis-anchor floor value, and this anchor (height=188, unchanged) reproduces every
+        // real block's nBits exactly from height 223 through the current tip once the gate is moved
+        // here. See critical-ppc-asert-reanchor-gate-bug.md. Anchor height/nBits/time themselves were
+        // always correct -- only this gate height was wrong.
+        consensus.nASERTReanchorHeight = 223;
         consensus.asertAnchorParams2 = Consensus::Params::ASERTAnchor{
-            188,          // anchor block height = real chain tip at the time of this fix
+            188,          // anchor block height = real chain tip at the time the fix was committed
             0x1e0fffff,   // block 188's own real nBits
             1793836396,   // block 187's (anchor's parent) real timestamp
         };
