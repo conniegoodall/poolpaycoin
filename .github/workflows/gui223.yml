@@ -40,6 +40,6 @@ jobs:
         with:
           name: poolpaycoin-win64-gui223
           path: |
-            src/qt/poolpaycoin-qt.exe
+            src/qt/bitcoin-qt.exe
             src/poolpaycoind.exe
             src/poolpaycoin-cli.exe
